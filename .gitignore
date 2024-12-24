@@ -1,0 +1,7 @@
+.env
+#SRC SETTINGS
+**/.DS_Store
+#VSCODE
+.vscode/*
+.prettierrc
+node_modules

@@ -1,0 +1,28 @@
+{
+    "name": "sportclub-challenge-back",
+    "version": "1.0.0",
+    "description": "Basic API in Node JS with Typescript",
+    "main": "src/server.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "serve": "nodemon"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ChiarelliLuciano/sportclub-challenge-back.git"
+    },
+    "author": "Luciano Chiarelli",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ChiarelliLuciano/sportclub-challenge-back/issues"
+    },
+    "homepage": "https://github.com/ChiarelliLuciano/sportclub-challenge-back#readme",
+    "dependencies": {
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.0",
+        "@types/node": "^22.10.2"
+    }
+}
