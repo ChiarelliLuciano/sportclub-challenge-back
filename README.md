@@ -37,12 +37,12 @@ Asegúrate de tener instalados los siguientes programas:
 
 ## Configuración
 
-Crea un archivo `.env` en el directorio raíz para configurar variables de entorno. Ejemplo:
+Crea un archivo `.env` en el directorio raíz para configurar variables de entorno:
 
 ```env
-API_BASE_URL=https://api.ejemplo.com
 SERVER_PORT=3000
 SERVER_HOSTNAME=localhost
+SPORT_CLUB_API_ENDPOINT=https://api.ejemplo.com
 ```
 
 ## Scripts disponibles
