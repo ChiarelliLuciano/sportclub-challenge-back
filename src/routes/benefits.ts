@@ -14,9 +14,9 @@ function setInCache(key: string, value: any, ttl: number): void {
 }
 
 router.get('/api/beneficios', (req, res, next) => {
-    (async () => {
-        const cacheKey = 'allBenefits';
+    const cacheKey = 'allBenefits';
 
+    (async () => {
         try {
             const cachedData = getFromCache(cacheKey);
             if (cachedData) {
@@ -31,20 +31,20 @@ router.get('/api/beneficios', (req, res, next) => {
                 setInCache(cacheKey, response.data, 180);
 
                 return res.status(200).json(response.data);
-            } else {
-                throw new Error('No benefits were found');
             }
-        } catch (error: any) {
+
+            throw new Error('No benefits were found');
+        } catch (error) {
             next(error); // Pass error to errorHandler
         }
     })();
 });
 
 router.get('/api/beneficios/:id', (req, res, next) => {
-    (async () => {
-        const { id } = req.params;
-        const cacheKey = `singleBenefitId:${id}`;
+    const { id } = req.params;
+    const cacheKey = `singleBenefitId:${id}`;
 
+    (async () => {
         try {
             const cachedData = getFromCache(cacheKey);
             if (cachedData) {
@@ -59,10 +59,10 @@ router.get('/api/beneficios/:id', (req, res, next) => {
                 setInCache(cacheKey, response.data, 180);
 
                 return res.status(200).json(response.data);
-            } else {
-                throw new Error(`No benefit with ID: ${id}`);
             }
-        } catch (error: any) {
+
+            throw new Error(`No benefit with ID: ${id}`);
+        } catch (error) {
             next(error); // Pass error to errorHandler
         }
     })();

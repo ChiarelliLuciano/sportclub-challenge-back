@@ -5,3 +5,6 @@
 .vscode/*
 .prettierrc
 node_modules
+build
+#TEST
+coverage
