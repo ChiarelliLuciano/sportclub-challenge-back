@@ -4,42 +4,52 @@ import './config/logging';
 import { SERVER, SERVER_HOSTNAME, SERVER_PORT } from './config/config';
 import { loggingHandler } from './middleware/loggingHandler';
 import { corsHandler } from './middleware/corsHandler';
-import { routeNotFound } from './middleware/routeNotFound';
+import { errorHandler } from './middleware/errorHandler';
 import benefitRoutes from './routes/benefits';
 
-export const router = express();
+export const app = express();
 export let httpServer: ReturnType<typeof http.createServer>;
 
 export const Main = () => {
     logging.log('------------------------------');
     logging.log('Initializing API');
     logging.log('------------------------------');
-    router.use(express.urlencoded({ extended: true }));
-    router.use(express.json());
+
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json());
 
     logging.log('------------------------------');
     logging.log('Logging & Configuration');
     logging.log('------------------------------');
-    router.use(loggingHandler);
-    router.use(corsHandler);
+    app.use(loggingHandler);
+    app.use(corsHandler);
 
     logging.log('------------------------------');
     logging.log('Benefits Routing');
     logging.log('------------------------------');
-    router.use(benefitRoutes);
+    app.use(benefitRoutes);
 
     logging.log('------------------------------');
     logging.log('Controller Routing');
     logging.log('------------------------------');
-    router.get('/api/healthcheck', (req, res) => {
+    app.get('/api/healthcheck', (req, res) => {
         res.status(200).json({ status: 'RUNNING' });
     });
-    router.use(routeNotFound);
+
+    logging.log('------------------------------');
+    logging.log('Error Middleware');
+    logging.log('------------------------------');
+    app.use((req, res, next) => {
+        const error = new Error(`Route Not Found: ${req.method} ${req.originalUrl}`);
+        (error as any).status = 404;
+        next(error); // Pass error to errorHandler
+    });
+    app.use(errorHandler);
 
     logging.log('------------------------------');
     logging.log('Start Server');
     logging.log('------------------------------');
-    httpServer = http.createServer(router);
+    httpServer = http.createServer(app);
     httpServer.listen(SERVER.SERVER_PORT, () => {
         logging.log('------------------------------');
         logging.info('Server Started: ' + SERVER_HOSTNAME + ':' + SERVER_PORT);

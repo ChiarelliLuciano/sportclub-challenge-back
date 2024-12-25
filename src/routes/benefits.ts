@@ -13,16 +13,13 @@ router.get('/api/beneficios', async (req, res, next) => {
 
             res.status(200).json(response.data);
         } else {
-            logging.warn('No benefits were found');
-            res.status(404).json({ message: 'No benefits were found' });
+            const error = new Error('No benefits were found');
+            throw error;
         }
     } catch (error: any) {
         logging.error(error.message);
 
-        res.status(500).json({
-            error: 'Error while fetching benefits',
-            details: error.message
-        });
+        next(error); // Pass error to errorHandler
     }
 });
 
@@ -35,16 +32,13 @@ router.get('/api/beneficios/:id', async (req, res, next) => {
 
             res.status(200).json(response.data);
         } else {
-            logging.warn(`No benefit with ID: ${id}`);
-            res.status(404).json({ error: `No benefit with ID: ${id}` });
+            const error = new Error(`No benefit with ID: ${id}`);
+            throw error;
         }
     } catch (error: any) {
         logging.error(error.message);
 
-        res.status(500).json({
-            error: `Error while fetching benefit with ID: ${id}`,
-            details: error.message
-        });
+        next(error); // Pass error to errorHandler
     }
 });
 
