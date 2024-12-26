@@ -41,8 +41,8 @@ describe('Benefits Routes', () => {
         });
 
         it('Returns benefits from cache if available', async () => {
-            const mockData = [{ id: 1, name: 'Benefit 1' }];
-            memoryCache.set('allBenefits', mockData, 180);
+            const mockData = { error: false, status: 200, body: { beneficios: [{ id: 1, name: 'Benefit 1' }] } };
+            memoryCache.set('allBenefits_page_1', mockData, 180);
 
             const response = await request(app).get('/api/beneficios');
 

@@ -14,7 +14,8 @@ function setInCache(key: string, value: any, ttl: number): void {
 }
 
 router.get('/api/beneficios', (req, res, next) => {
-    const cacheKey = 'allBenefits';
+    const { page = 1 } = req.query;
+    const cacheKey = `allBenefits_page_${page}`;
 
     (async () => {
         try {
@@ -24,12 +25,11 @@ router.get('/api/beneficios', (req, res, next) => {
                 return res.status(200).json(cachedData);
             }
 
-            const response = await axios.get(API_BASE_URL);
+            const response = await axios.get(`${API_BASE_URL}?page=${page}`);
             if (response.data) {
                 logging.info('Fetched benefits successfully', response.data);
 
                 setInCache(cacheKey, response.data, 180);
-
                 return res.status(200).json(response.data);
             }
 
