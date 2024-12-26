@@ -112,4 +112,45 @@ describe('Benefits Routes', () => {
             expect(response.body.error).toBe('Benefit Not Found');
         });
     });
+
+    describe('GET /api/beneficios/comercio/:value', () => {
+        it('Returns benefits from cache if available', async () => {
+            const mockData = [{ id: 1, comercio: 'Starbucks', name: 'Benefit 1' }];
+            memoryCache.set('benefitsByValue:Starbucks', mockData, 180);
+
+            const response = await request(app).get('/api/beneficios/comercio/Starbucks');
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual(mockData);
+        });
+
+        it('Fetches benefits from external API if not in cache', async () => {
+            const mockData = [{ id: 1, comercio: 'Starbucks', name: 'Benefit 1' }];
+            mockedAxios.get.mockResolvedValueOnce({ data: mockData });
+
+            const response = await request(app).get('/api/beneficios/comercio/Starbucks');
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual(mockData);
+            expect(mockedAxios.get).toHaveBeenCalledWith(expect.stringContaining('archivado=false&comercio=Starbucks'));
+        });
+
+        it('Handles errors when fetching benefits by commerce', async () => {
+            mockedAxios.get.mockRejectedValueOnce(new Error('Failed to fetch benefits'));
+
+            const response = await request(app).get('/api/beneficios/comercio/Starbucks');
+
+            expect(response.status).toBe(500);
+            expect(response.body.error).toBe('Failed to fetch benefits');
+        });
+
+        it('Handles empty response from external API', async () => {
+            mockedAxios.get.mockResolvedValueOnce({ data: [] });
+
+            const response = await request(app).get('/api/beneficios/comercio/Starbucks');
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual([]);
+        });
+    });
 });

@@ -68,4 +68,32 @@ router.get('/api/beneficios/:id', (req, res, next) => {
     })();
 });
 
+router.get('/api/beneficios/comercio/:value', (req, res, next) => {
+    const { value } = req.params;
+    const cacheKey = `benefitsByValue:${value}`;
+
+    (async () => {
+        try {
+            const cachedData = getFromCache(cacheKey);
+            if (cachedData) {
+                logging.info('Serving data from cache', cachedData);
+                return res.status(200).json(cachedData);
+            }
+
+            const response = await axios.get(`${API_BASE_URL}?archivado=false&comercio=${encodeURIComponent(value)}`);
+            if (response.data) {
+                logging.info(`Fetched benefits for "${value}" successfully`, response.data);
+
+                setInCache(cacheKey, response.data, 180);
+
+                return res.status(200).json(response.data);
+            }
+
+            throw new Error(`No benefits found for comercio: ${value}`);
+        } catch (error) {
+            next(error); // Pass error to errorHandler
+        }
+    })();
+});
+
 export default router;
